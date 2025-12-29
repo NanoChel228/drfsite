@@ -21,4 +21,5 @@ from getpost.views import getPostAPI
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('posts/', getPostAPI.as_view()),
+    path("posts/<int:pk>/", getPostAPI.as_view()),
 ]

@@ -17,14 +17,50 @@ class getPostAPI(APIView):
     def post(self, request):
         serializer = PostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+    
+        return Response({"post": serializer.data})
+    
+
+    # def delete(self, request):
+    #     post = Post.objects.get(id=request.data["id_post"])
+    #     return Response({"deleted_post": PostSerializer(post).data})
 
 
-        post_new = Post.objects.create(
-            title=request.data["title"],
-            text=request.data["text"],
-        )
-        return Response({"post": PostSerializer(post_new).data})
 
+    def put(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if not pk:
+            return Response({"error": "Method PUT not allowed"})
+        
+        try:
+            instance = Post.objects.get(pk=pk)
+        except:
+            return Response({"error": "Object does not exist"})
+        
+
+        serializer = PostSerializer(data=request.data, instance=instance)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"post": serializer.data})
+    
+
+    def delete(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if not pk:
+            return Response({"error": "Method DELETE not allowed"})
+        
+        try:
+            instance = Post.objects.get(pk=pk)
+        except:
+            return Response({"error": "Object does not exist"})
+        
+
+        data = PostSerializer(instance).data
+        instance.delete()
+        return Response({"post": data})
+    
 
 
 # class getPostAPI(generics.ListAPIView):
