@@ -12,20 +12,11 @@ from rest_framework.parsers import JSONParser
 #         self.text = text
 
 
-class PostSerializer(serializers.Serializer):
-    title = serializers.CharField(max_length=255)
-    text = serializers.CharField()
-    created_ta = serializers.DateTimeField(default=timezone.now, read_only=True)
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ("__all__")
 
-    def create(self, validated_data):
-        return Post.objects.create(**validated_data)
-    
-    def update(self, instance, validated_data):
-        instance.title = validated_data.get("title", instance.title)
-        instance.text = validated_data.get("text", instance.text)
-        instance.created_ta = validated_data.get("created_ta", instance.created_ta)
-        instance.save()
-        return instance
     
 
     
